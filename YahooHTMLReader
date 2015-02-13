@@ -8,26 +8,32 @@ path = "C:\Users\Dan\Desktop\intraQuarter"
 def Key_Stats(gather="Total Debt/Equity (mrq)"):
     statspath = path+'/_KeyStats'
     stock_list = [x[0] for x in os.walk(statspath)] #names of stocks
-
+    df = pd.DataFrame(columns = ['Date','Unix','Ticker','DE Ratio'])
     for each_dir in stock_list[1:]: #[0] is the root directory which is unnecessary
         each_file = os.listdir(each_dir) #list of all filenames per stock directory
-        ticker = each_dir.split("\\")[5]
-        
+        ticker = each_dir.split("\\")[-1]
         if len(each_file) > 0: #some stock directories don't contain anything
             for file in each_file:
                 date_stamp = datetime.strptime(file, '%Y%m%d%H%M%S.html')
                 unix_time = time.mktime(date_stamp.timetuple())
-                ##At this point we have the stock name and timestamp of the file 
-                ##we'll be taking data from
+                #At this point we have the stock name and timestamp of the file 
+                #we'll be taking data from
                 full_file_path = each_dir+'/'+file
-                print(full_file_path)
                 source = open(full_file_path,'r').read()#could be a url
-                value = source.split(gather+':</td><td class="yfnc_tabledata1">')[1].split('</td>')[0]
-                ##[1]gets everything after gather link
-                ##[0] gets value before the closing tabledata tag
-                print(ticker+":",value)
-                print value
-            
-            
-
+                try:
+                    value = float(source.split(gather+':</td><td class="yfnc_tabledata1">')[1].split('</td>')[0])
+                    #[1]gets everything after gather link
+                    #[0] gets value before the closing tabledata tag
+                    df = df.append({'Date':date_stamp,'Unix':unix_time,
+                                    'Ticker':ticker,
+                                    'DE Ratio':value},
+                                    ignore_index=True)
+                except Exception as e:
+                    pass #some companies wont have any value
+                
+                
+    save = gather.replace(' ','').replace(')','').replace('(','').replace('/','')+('.csv')
+    #replaces a bunch of things with nothing
+    print(save)
+    df.to_csv(save)       
 Key_Stats()
