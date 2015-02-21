@@ -30,7 +30,7 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):
 
     ticker_list = []
 
-    for each_dir in stock_list[1:20]: #[0] is the root directory which is unnecessary
+    for each_dir in stock_list[1:25]: #[0] is the root directory which is unnecessary
         each_file = os.listdir(each_dir) #list of all filenames per stock directory
         ticker = each_dir.split("\\")[-1]
         ticker_list.append(ticker)
@@ -54,10 +54,15 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):
                         #[1]gets everything after gather link
                         #[0] gets value before the closing tabledata tag
                     except Exception as e:
-                        value = float(source.split(gather+':</td>\n<td class="yfnc_tabledata1">')[1].split('</td>')[0])
-                        #if exception, try looking for this slightly different value, since yahoo finance was changed at some point
-                        print (e, ticker, file)
-                        #time.sleep(15)
+                        try:
+                            value = float(source.split(gather+':</td>\n<td class="yfnc_tabledata1">')[1].split('</td>')[0])
+                            #if exception, try looking for this slightly different value, since yahoo finance was changed at some point
+                            #print (e, ticker, file)
+                        except Exception as e:
+                            
+                            value = float(source.split(gather+':</td>\n<td class="yfnc_tabledata1">')[1].split('</td>')[0])
+
+                            print (e, ticker, file)
                     
                     try: 
                         sp500_date = datetime.fromtimestamp(unix_time).strftime('%Y-%m-%d')
@@ -73,7 +78,24 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):
                     try:
                         stock_price = float(source.split('</small><big><b>')[1].split('</b></big>')[0])
                     except Exeption as e:
-                        print(str (e), ticker, file)
+                        try:
+                            stock_price = (source.split('</small><big><b>')[1].split('</b></big>')[0])
+                            stock_price = re.search(r'(\d[1,8]\.\d[1,8])',stock_price)
+                            #second stock_price searches for digits through reg exp from 1 in length to 8, a period,
+                            #followed by more digits
+                            stock_price = float(stock_price.group(1))
+                            print(stock_price)
+                    
+                        except Exception as e:
+                            try:
+                                stock_price = (source.split('<span class="time_rtq_ticker">')[1].split('</span>')[0])
+                                stock_price = re.search(r'(\d[1,8]\.\d[1,8])',stock_price)
+                                stock_price = float(stock_price.group(1))
+                            except Excepton as e:
+                                print(str(e),'afasdf')
+                                print('latest:',str(e),ticker,file)
+                                           
+                            time.sleep(15)
                     
                     if not starting_stock_value:
                         starting_stock_value = stock_price
