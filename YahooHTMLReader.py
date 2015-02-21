@@ -29,9 +29,9 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):
 
     sp500_df = pd.DataFrame.from_csv("YAHOO-Index_GSPC.csv")#loads SP500 into a dataframe
 
-    ticker_list = []
+    ticker_list = []    
 
-    for each_dir in stock_list[1:25]: #[0] is the root directory which is unnecessary
+    for each_dir in stock_list[1:500]: #[0] is the root directory which is unnecessary
         each_file = os.listdir(each_dir) #list of all filenames per stock directory
         ticker = each_dir.split("\\")[-1]
         ticker_list.append(ticker)
@@ -54,16 +54,10 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):
                         value = float(source.split(gather+':</td><td class="yfnc_tabledata1">')[1].split('</td>')[0])
                         #[1]gets everything after gather link
                         #[0] gets value before the closing tabledata tag
-                    except Exception as e:
-                        try:
-                            value = float(source.split(gather+':</td>\n<td class="yfnc_tabledata1">')[1].split('</td>')[0])
+                    except:
+                        value = float(source.split(gather+':</td>\n<td class="yfnc_tabledata1">')[1].split('</td>')[0])
                             #if exception, try looking for this slightly different value, since yahoo finance was changed at some point
                             #print (e, ticker, file)
-                        except Exception as e:
-                            
-                            value = float(source.split(gather+':</td>\n<td class="yfnc_tabledata1">')[1].split('</td>')[0])
-
-                            print (e, ticker, file)
                     
                     try: 
                         sp500_date = datetime.fromtimestamp(unix_time).strftime('%Y-%m-%d')
@@ -78,25 +72,24 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):
 
                     try:
                         stock_price = float(source.split('</small><big><b>')[1].split('</b></big>')[0])
-                    except Exeption as e:
+                    except:
                         try:
                             stock_price = (source.split('</small><big><b>')[1].split('</b></big>')[0])
-                            stock_price = re.search(r'(\d[1,8]\.\d[1,8])',stock_price)
+                            stock_price = re.search(r'(\d{1,8}\.\d{1,8})',stock_price)
                             #second stock_price searches for digits through reg exp from 1 in length to 8, a period,
                             #followed by more digits
                             stock_price = float(stock_price.group(1))
                             print(stock_price)
                     
-                        except Exception as e:
+                        except:
                             try:
                                 stock_price = (source.split('<span class="time_rtq_ticker">')[1].split('</span>')[0])
-                                stock_price = re.search(r'(\d[1,8]\.\d[1,8])',stock_price)
+                                stock_price = re.search(r'(\d{1,8}\.\d{1,8})',stock_price)
                                 stock_price = float(stock_price.group(1))
-                            except Excepton as e:
-                                print(str(e),'afasdf')
+                            except:
                                 print('latest:',str(e),ticker,file)
                                            
-                            time.sleep(15)
+                            
                     
                     if not starting_stock_value:
                         starting_stock_value = stock_price
@@ -151,3 +144,4 @@ def Key_Stats(gather="Total Debt/Equity (mrq)"):
     print(save)
     df.to_csv(save)       
 Key_Stats()
+
