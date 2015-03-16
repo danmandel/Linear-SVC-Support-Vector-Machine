@@ -11,7 +11,7 @@ chartSeries(DEXJPUS)
 candleChart(DEXJPUS,subset='1940-12::2015')
 
 quandl
-
+#also check bea.gov and worldbank for api
 #install.packages('WDI')
 
 #WDIsearch('gdp')[1:10,]
