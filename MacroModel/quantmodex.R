@@ -7,16 +7,16 @@ getFX('EUR/USD',src = 'yahoo')
 #getSymbols('CPIAUCSL',src='FRED')
 getSymbols('DGS10',src='FRED')
 
+DGS10 = DGS10['2010::']
 #dataSPY = SPY['2014::']
 #dataVIX = VIX['2015::']
-todayclose = EURUSD['2015::']
+todayclose = EURUSD['2010::']
 prevclose <- lag(todayclose,1) # now the value for jan 2 is the price it was on jan 1
 nextclose <- lag(todayclose,-1)
 nextday = ifelse(nextclose>todayclose,1,ifelse(nextclose<todayclose,-1,0))
-dataset <- merge(prevclose,todayclose,DGS10['2015::'],nextday)
+dataset <- na.locf(merge(prevclose,todayclose,DGS10['2014::'],nextday)) #Last One Carried Forward and merged
 colnames(dataset) = c("prevclose","close","DGS110","nextday")
-dataset[is.na(dataset)] <- 999
-
+#dataset[is.na(dataset)] <- 999
 
 
 index = 1:nrow(dataset)
@@ -38,6 +38,7 @@ svm.pred = predict(svm.model,testing[,-ncol(testing)]) # leave out last column w
 
 table(pred=svm.pred, true=testing[,ncol(testing)])
 classAgreement(table(pred=svm.pred, true=testing[,ncol(testing)]))
+
 
 
 
