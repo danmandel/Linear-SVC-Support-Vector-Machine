@@ -7,14 +7,15 @@ getFX('EUR/USD',src = 'yahoo')
 #getSymbols('CPIAUCSL',src='FRED')
 getSymbols('DGS10',src='FRED')
 
-dataSPY = SPY['2014::']
-dataVIX = VIX['2015::']
+#dataSPY = SPY['2014::']
+#dataVIX = VIX['2015::']
 todayclose = EURUSD['2015::']
 prevclose <- lag(todayclose,1) # now the value for jan 2 is the price it was on jan 1
 nextclose <- lag(todayclose,-1)
 nextday = ifelse(nextclose>todayclose,1,ifelse(nextclose<todayclose,-1,0))
-dataset <- merge(prevclose,todayclose,nextclose,nextday,DGS10['2015::'])
-colnames(dataset) = c("prevclose","close","nextclose","nextday","DGS110")
+dataset <- merge(prevclose,todayclose,DGS10['2015::'],nextday)
+colnames(dataset) = c("prevclose","close","DGS110","nextday")
+dataset[is.na(dataset)] <- 999
 
 
 
@@ -33,13 +34,10 @@ rownames(testing) = NULL
 testing$nextday = as.factor(testing$nextday)
 
 svm.model <- svm(nextday~.,data=training,cost=10^1,gamma=10^-2)
-svm.pred = predict(svm.model,testing[,-ncol(testing)])
+svm.pred = predict(svm.model,testing[,-ncol(testing)]) # leave out last column which contains result
 
-#mm <- specifyModel(Next(OpCl(dataSPY)) ~ OpCl(dataSPY) + Cl(dataVIX))
-#modelData(mm)
-#candleChart(SPY,theme='white.mono', type='candles') 
-#addSMI(n=13,slow=25,fast=2,signal=9,ma.type="EMA")
-#buildData(formula, na.rm = TRUE, return.class = "zoo")
+table(pred=svm.pred, true=testing[,ncol(testing)])
+classAgreement(table(pred=svm.pred, true=testing[,ncol(testing)]))
 
 
 
