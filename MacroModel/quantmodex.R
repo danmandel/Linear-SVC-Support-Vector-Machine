@@ -1,11 +1,14 @@
 library(quantmod)
 library(caret)
 library(e1071)
-#getSymbols('SPY',src = 'yahoo')
-getSymbols('^VIX',src='yahoo')
-getFX('EUR/USD',src = 'yahoo')
-#getSymbols('CPIAUCSL',src='FRED')
-getSymbols('DGS10',src='FRED')
+date="2014-01-01"
+date1='2014::'
+
+getSymbols('SPY',from=date,src = 'yahoo')
+getSymbols('^VIX',from=date,src='yahoo')
+getFX('EUR/USD',from=date,src = 'google')
+getSymbols('CPIAUCSL',from=date,src='FRED')
+getSymbols('DGS10',from=date,src='FRED')
 
 DGS10 = DGS10['2010::']
 #dataSPY = SPY['2014::']
@@ -38,8 +41,5 @@ svm.pred = predict(svm.model,testing[,-ncol(testing)]) # leave out last column w
 
 table(pred=svm.pred, true=testing[,ncol(testing)])
 classAgreement(table(pred=svm.pred, true=testing[,ncol(testing)]))
-
-
-
 
   
