@@ -20,3 +20,10 @@ plot(X,Y)
 smallSpam <- spam[,c(34,32)]
 prComp <- prcomp(smallSpam)
 plot(prComp$x[,1],prComp$x[,2])
+
+prComp$rotation
+
+typeColor <- ((spam$type=="spam")*1+1)
+prComp <- prcomp(log10(spam[,-58]+1))
+plot(prComp$x[,1],prComp$x[,2],col=typeColor,xlab="PC1",ylab="PC2")
+
