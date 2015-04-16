@@ -1,1 +1,17 @@
+library(caret);data(faithful);set.seed(333)
+inTrainingSet <- createDataPartition(y=faithful$waiting,
+                                     p=.5,list=FALSE)
+trainFaith <- faithful[inTrainingSet,];testFaith <- faithful[-inTrainingSet,]
+head(trainFaith)
 
+plot(trainFaith$waiting,trainFaith$eruptions,pch=19,col="blue",
+     xlab="Waiting",ylab="Duration")
+
+#Fit a linear model
+lm1 <- lm(eruptions ~ waiting,data=trainFaith)
+summary(lm1)
+
+#Model fit
+plot(trainFaith$waiting,trainFaith$eruptions,pch=19,col="blue",
+     xlab="Waiting",ylab="Duration")
+lines(trainFaith$waiting,lm1$fitted,lwd=3)
