@@ -2,15 +2,28 @@ library(quantmod)
 library(caret)
 library(e1071)
 date="2014-01-01"
-date1='2014::'
+date1='2015::'
 
 
-getSymbols('SPY',from=date,src = 'yahoo')
-getSymbols('^VIX',from=date,src='yahoo')
-getFX('EUR/USD',from=date,src = 'google')
-getSymbols('CPIAUCSL',from=date,src='FRED')
-getSymbols('DGS10',from=date,src='FRED')
-getSymbols('UNRATE',from=date,src='FRED')
+fredtickerlist <- c('SP500','VIXCLS','EXUSEU','CPIAUCSL','DGS10','UNRATE')
+getSymbols(fredtickerlist,from=date,src='FRED')
+
+total = merge(fredtickerlist[1],fredtickerlist[2])
+
+for (i in 1:length(fredtickerlist)){
+  chartSeries(get(fredtickerlist[i])).subset="last 26 weeks"
+}
+
+mergeshit2 <- function(n){
+  for (i in 1:6){
+    i=i[date1]
+  }
+}
+
+
+
+#SP500=SP500[date1]
+mergeshit2(fredtickerlist)
 
 DGS10 = DGS10[date1]
 CPIAUCSL=CPIAUCSL[date1]
