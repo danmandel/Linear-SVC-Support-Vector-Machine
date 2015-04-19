@@ -8,35 +8,30 @@ date1='2015::'
 fredtickerlist <- c('SP500','VIXCLS','EXUSEU','CPIAUCSL','DGS10','UNRATE')
 getSymbols(fredtickerlist,from=date,src='FRED')
 
-total = merge(fredtickerlist[1],fredtickerlist[2])
+#googletickerlist <- c('SPY')
 
-for (i in 1:length(fredtickerlist)){
-  chartSeries(get(fredtickerlist[i])).subset="last 26 weeks"
-}
 
-mergeshit2 <- function(n){
-  for (i in 1:6){
-    i=i[date1]
-  }
-}
+#total = merge(fredtickerlist[1],fredtickerlist[2])
 
+#mergeshit2 <- function(n){
+ # for (i in 1:6){
+  #  i=i[date1]
+  #}
+#}
 
 
 #SP500=SP500[date1]
-mergeshit2(fredtickerlist)
-
 DGS10 = DGS10[date1]
 CPIAUCSL=CPIAUCSL[date1]
 UNRATE = UNRATE[date1] 
-#dataSPY = SPY['2014::']
-#dataVIX = VIX['2015::']
-todayclose = EURUSD
+]
+todayclose = EXUSEU
 prevclose <- lag(todayclose,1) # now the value for jan 2 is the price it was on jan 1
 nextclose <- lag(todayclose,-1)
 #nextday = ifelse(nextclose>todayclose,1,ifelse(nextclose<todayclose,-1,0))
 nextday = ifelse(nextclose>=todayclose,1,-1)
-dataset <- na.trim(na.locf(merge(prevclose,todayclose,SPY$SPY.Close,SPY$SPY.Volume,CPIAUCSL,VIX$VIX.Close,DGS10,nextday))) #Last One Carried Forward and merged
-colnames(dataset) = c("prevclose","close","SPYclose","SPYvolume","CPIAUCSL","VIXclose","DGS10","nextday")
+dataset <- na.trim(na.locf(merge(prevclose,todayclose,SP500,CPIAUCSL,VIX$VIX.Close,DGS10,nextday))) #Last One Carried Forward and merged
+colnames(dataset) = c("prevclose","close","SPYclose",,"CPIAUCSL","VIXclose","DGS10","nextday")
 #dataset[is.na(dataset)] <- 999
 
 
