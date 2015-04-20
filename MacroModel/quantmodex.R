@@ -24,14 +24,14 @@ getSymbols(fredtickerlist,from=date,src='FRED')
 DGS10 = DGS10[date1]
 CPIAUCSL=CPIAUCSL[date1]
 UNRATE = UNRATE[date1] 
-]
+
 todayclose = EXUSEU
 prevclose <- lag(todayclose,1) # now the value for jan 2 is the price it was on jan 1
 nextclose <- lag(todayclose,-1)
 #nextday = ifelse(nextclose>todayclose,1,ifelse(nextclose<todayclose,-1,0))
 nextday = ifelse(nextclose>=todayclose,1,-1)
-dataset <- na.trim(na.locf(merge(prevclose,todayclose,SP500,CPIAUCSL,VIX$VIX.Close,DGS10,nextday))) #Last One Carried Forward and merged
-colnames(dataset) = c("prevclose","close","SPYclose",,"CPIAUCSL","VIXclose","DGS10","nextday")
+dataset <- na.trim(na.locf(merge(prevclose,todayclose,SP500,CPIAUCSL,VIXCLS,DGS10,nextday))) #Last One Carried Forward and merged
+colnames(dataset) = c("prevclose","close","SPYclose","CPIAUCSL","VIXclose","DGS10","nextday")
 #dataset[is.na(dataset)] <- 999
 
 
@@ -54,4 +54,3 @@ svm.pred = predict(svm.model,testing[,-ncol(testing)]) # leave out last column w
 
 table(pred=svm.pred, true=testing[,ncol(testing)])
 classAgreement(table(pred=svm.pred, true=testing[,ncol(testing)]))
-
