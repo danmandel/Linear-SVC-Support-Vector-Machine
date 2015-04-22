@@ -31,3 +31,19 @@ plot(testFaith$waiting,testFaith$eruptons,pch=19,col="blue",
      xlab="Waiting",ylab="Duration")
 lines(testFaith$waiting,predict(lm1,newdata=testFaith),lwd=3)
 
+#Calculate RMSE on training 
+sqrt(sum((lm1$fitted-trainFaith$eruptions)^2))
+
+#Calculate RMSE on test
+sqrt(sum((predict(lm1,newdata=testFaith)-testFaith$eruptions)^2))
+
+#Prediction intervals
+pred1 <- predict(lm1,newdata=testFaith,interval="prediction")
+ord <- order(testFaith$waiting)
+plot(testFaith$waiting,testFaith$eruptions,pch=19,col="blue")
+matlines(testFaith$waiting[ord],pred1[ord,],type="l",,col=c(1,2,2),
+         lty=c(1,2,2),lwd=3)
+
+#Same process with caret
+modFit <- train(eruptions ~ waiting,data=trainFaith,method="lm")
+summary(modFit$finalModel)
