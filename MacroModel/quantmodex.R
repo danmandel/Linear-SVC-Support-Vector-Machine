@@ -1,11 +1,11 @@
-library(quantmod)
+ibrary(quantmod)
 library(caret)
 library(e1071)
 date="2014-01-01"
 date1='2015::'
 
 
-fredtickerlist <- c('SP500','VIXCLS','EXUSEU','CPIAUCSL','DGS10','UNRATE')
+fredtickerlist <- c('SP500','VIXCLS','DEXUSEU','CPIAUCSL','DGS10','UNRATE')
 getSymbols(fredtickerlist,from=date,src='FRED')
 
 #googletickerlist <- c('SPY')
@@ -21,11 +21,11 @@ getSymbols(fredtickerlist,from=date,src='FRED')
 
 
 #SP500=SP500[date1]
-DGS10 = DGS10[date1]
-CPIAUCSL=CPIAUCSL[date1]
-UNRATE = UNRATE[date1] 
+#DGS10 = DGS10[date1]
+#CPIAUCSL=CPIAUCSL[date1]
+#UNRATE = UNRATE[date1] 
 
-todayclose = EXUSEU
+todayclose = DEXUSEU
 prevclose <- lag(todayclose,1) # now the value for jan 2 is the price it was on jan 1
 nextclose <- lag(todayclose,-1)
 #nextday = ifelse(nextclose>todayclose,1,ifelse(nextclose<todayclose,-1,0))
@@ -54,3 +54,4 @@ svm.pred = predict(svm.model,testing[,-ncol(testing)]) # leave out last column w
 
 table(pred=svm.pred, true=testing[,ncol(testing)])
 classAgreement(table(pred=svm.pred, true=testing[,ncol(testing)]))
+
