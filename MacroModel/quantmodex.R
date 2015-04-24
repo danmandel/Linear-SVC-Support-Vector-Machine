@@ -1,4 +1,4 @@
-ibrary(quantmod)
+library(quantmod)
 library(caret)
 library(e1071)
 date="2014-01-01"
@@ -7,18 +7,12 @@ date1='2015::'
 
 fredtickerlist <- c('SP500','VIXCLS','DEXUSEU','CPIAUCSL','DGS10','UNRATE')
 getSymbols(fredtickerlist,from=date,src='FRED')
-
 #googletickerlist <- c('SPY')
 
+total = merge(CPIAUCSL,DEXUSEU,DGS10,SP500,UNRATE,VIXCLS)
+total1 = total[date1]
 
-#total = merge(fredtickerlist[1],fredtickerlist[2])
-
-#mergeshit2 <- function(n){
- # for (i in 1:6){
-  #  i=i[date1]
-  #}
-#}
-
+#weekly <-(to.weekly(total))
 
 #SP500=SP500[date1]
 #DGS10 = DGS10[date1]
